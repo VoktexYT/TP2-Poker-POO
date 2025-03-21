@@ -19,9 +19,9 @@ namespace Poker102
         readonly ConsoleColor[] _COULEURS =
         {
             ConsoleColor.Black,
-            ConsoleColor.Blue,
-            ConsoleColor.Red,
-            ConsoleColor.DarkRed
+            ConsoleColor.DarkBlue,
+            ConsoleColor.DarkRed,
+            ConsoleColor.DarkYellow
         };
 
         const string _VALEUR_TEXTE = "23456789XJQKA";
@@ -60,7 +60,7 @@ namespace Poker102
             for (int i = 0; i < structureCarte.Length; i++)
             {
                 Console.CursorLeft = positionGaucheCurseur;
-                Console.CursorTop = 2 + (posY * 5) + i;
+                Console.CursorTop = 5 + (posY * 5) + i;
                 Console.WriteLine(structureCarte[i]);
             }
         }
