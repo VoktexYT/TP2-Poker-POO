@@ -28,7 +28,7 @@ namespace Poker102
             Ronde ronde = new Ronde(paquet);
 
             ronde.DistribuerCartes();
-            ronde.TricherMainsDesJoueurs();
+            // ronde.TricherMainsDesJoueurs();
             ronde.AfficherMainsJoueurs();
 
             Util.Pause();

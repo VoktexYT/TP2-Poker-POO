@@ -39,16 +39,16 @@ namespace Poker102
         public void TricherMainsDesJoueurs()
         {
             joueurs[0].Cartes[0] = new Carte(0, 12);
-            joueurs[0].Cartes[1] = new Carte(0, 10);
-            joueurs[0].Cartes[2] = new Carte(0, 11);
-            joueurs[0].Cartes[3] = new Carte(0, 9);
-            joueurs[0].Cartes[4] = new Carte(0, 8);
+            joueurs[0].Cartes[1] = new Carte(1, 8);
+            joueurs[0].Cartes[2] = new Carte(2, 9);
+            joueurs[0].Cartes[3] = new Carte(3, 10);
+            joueurs[0].Cartes[4] = new Carte(2, 11);
 
-            joueurs[1].Cartes[0] = new Carte(0, 12);
-            joueurs[1].Cartes[1] = new Carte(1, 12);
-            joueurs[1].Cartes[2] = new Carte(2, 12);
-            joueurs[1].Cartes[3] = new Carte(3, 12);
-            joueurs[1].Cartes[4] = new Carte(0, 0);
+            joueurs[1].Cartes[0] = new Carte(1, 10);
+            joueurs[1].Cartes[1] = new Carte(1, 10);
+            joueurs[1].Cartes[2] = new Carte(2, 10);
+            joueurs[1].Cartes[3] = new Carte(2, 10);
+            joueurs[1].Cartes[4] = new Carte(0, 3);
 
             joueurs[2].Cartes[0] = new Carte(2, 12);
             joueurs[2].Cartes[1] = new Carte(3, 0);
@@ -86,12 +86,40 @@ namespace Poker102
         public void AfficherMainsJoueurs()
         {
             int i = 0;
+            int indexJoueurPlusFort = 0;
+            
+            for (int j = 0; j < joueurs.Length; j++)
+            {
+                if (joueurs[indexJoueurPlusFort].RecupererValeurMain() > joueurs[j].RecupererValeurMain())
+                {
+                    indexJoueurPlusFort = j;
+                }
+            }
+
+            List<int> listeIndexJoueursPlusForts = new List<int>();
+            
+            for (int j = 0; j < joueurs.Length; j++)
+            {
+                if (joueurs[j].RecupererValeurMain() == joueurs[indexJoueurPlusFort].RecupererValeurMain())
+                {
+                    listeIndexJoueursPlusForts.Add(j);        
+                }
+            }
 
             foreach (MainJoueur joueur in joueurs)
             {
                 joueur.Afficher();
                 Console.SetCursorPosition(35, 5 * i + 6);
-                Console.Write("Bonjour");
+                
+                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                
+                if (listeIndexJoueursPlusForts.Contains(i))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                }
+                
+                Console.Write(joueur.RecupererValeurFrancais());
                 i++;
             }
 
