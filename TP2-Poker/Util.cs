@@ -1,116 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Poker102;
 
-namespace Poker102
+/// <summary>
+/// Classe utilitaire contenant des méthodes pour gérer l'affichage et d'autres fonctionnalités globales du programme.
+/// </summary>
+public class Util
 {
-    internal class Util
-    {
-        public static Random rdm = new Random();
+	/// <summary>
+	/// Générateur de nombres aléatoires utilisé dans tout le programme.
+	/// </summary>
+	public static Random rdm = new Random();
 
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public static void Titre(string leTitre)
-        {
-            ViderEcran();
+	/// <summary>
+	/// Vide l'écran de la console.
+	/// </summary>
+	public static void ViderEcran()
+	{
+		Console.Clear(); // Efface le contenu de la console.
+		Console.WriteLine("\x1b[3J"); // Supprime l'historique du terminal (utile sur certains systèmes).
+	}
+    
+	/// <summary>
+	/// Met le programme en pause jusqu'à ce que l'utilisateur appuie sur une touche.
+	/// </summary>
+	public static void Pause()
+	{
+		Console.WriteLine("\n\tAppuyez sur une touche...");
+		Console.ReadKey(true); // Attend une entrée utilisateur sans afficher la touche pressée.
+	}
 
-            for (int i = 0; i < leTitre.Length; i++)
-            {
-                Console.Write("_");
-            }
+	/// <summary>
+	/// Réinitialise la couleur du terminal en noir et blanc, puis vide l'écran.
+	/// </summary>
+	public static void SetNoirEttBlanc()
+	{
+		Console.ResetColor(); // Réinitialise les couleurs par défaut de la console.
+		Console.BackgroundColor = ConsoleColor.Black;
+		Console.ForegroundColor = ConsoleColor.White;
+		ViderEcran(); // Vide l'écran après la modification des couleurs.
+	}
 
-            Console.WriteLine("\n" + leTitre);
-
-            for (int i = 0; i < leTitre.Length; i++)
-            {
-                Console.Write("_");
-            }
-
-            Console.WriteLine("\n\n");
-        }
-
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public static void ViderEcran()
-        {
-            Console.Clear();
-            Console.WriteLine("\x1b[3J");
-        }
-
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public char SaisirChar()
-        {
-            ConsoleKeyInfo cle = Console.ReadKey();
-            return cle.KeyChar;
-        }
-
-
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public int SaisirEntier()
-        {
-            string? input = Console.ReadLine();
-
-            if (int.TryParse(input, out int res))
-            {
-                return res;
-            }
-
-            return 0;
-        }
-
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public double SaisirReel()
-        {
-            string? input = Console.ReadLine();
-
-            if (double.TryParse(input, out double res))
-            {
-                return res;
-            }
-
-            return 0.0;
-        }
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public static void Pause()
-        {
-            Console.WriteLine("\n\tAppuyez sur une touche...");
-            Console.ReadKey(true);
-        }
-
-        //---------------------------------------------
-        //
-        //---------------------------------------------
-        public void Sep(string msg = "")
-        {
-            Console.WriteLine($"----------{msg}----------");
-        }
-
-        public static void SetNoirEttBlanc()
-        {
-            Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
-            ViderEcran();
-        }
-
-        public static void InitTapis()
-        {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.BackgroundColor = ConsoleColor.DarkGreen;
-            Console.ForegroundColor = ConsoleColor.Black;
-            ViderEcran();
-        }
-    }
+	/// <summary>
+	/// Initialise l'affichage du tapis vert du jeu de poker en changeant la couleur de fond de la console.
+	/// </summary>
+	public static void InitTapis()
+	{
+		Console.OutputEncoding = System.Text.Encoding.UTF8; // Active l'encodage UTF-8 pour l'affichage des caractères spéciaux.
+		Console.BackgroundColor = ConsoleColor.DarkGreen; // Définit le fond en vert foncé.
+		Console.ForegroundColor = ConsoleColor.Black; // Définit le texte en noir.
+		ViderEcran(); // Vide l'écran après la modification des couleurs.
+	}
 }
