@@ -48,74 +48,105 @@ namespace Poker102
             });
         }
 
-        bool ValeurMainCouleur()
+        bool ValeurMainCouleur(ref int valeurCartes)
         {
             return Cartes.All(carte => carte.Sorte == Cartes[0].Sorte);
         }
 
-        bool ValeurMainQuinte()
+        bool ValeurMainQuinte(ref int valeurCartes)
         {
             TrierCroissant();
             
+            List<Carte> valeurChaqueCarte = new List<Carte>();
+
+            IEnumerable<int> differenceCarte =
+                Cartes.Zip(Cartes.Skip(1), (a, b) => b.Valeur - a.Valeur);
+
+            valeurCartes += valeurChaqueCarte.Sum((c) => c.Valeur);
+            
             // Vérifier s'il y a une séquence continue
-            return Cartes.
-                Zip(Cartes.Skip(1), (a, b) => b.Valeur - a.Valeur)
-                .All(diff => diff == 1);
+            return Cartes.All(diff => diff.Valeur == 1);
         }
         
-        bool ValeurMainRepetee(int rep, int rep2 = -1)
+        bool ValeurMainRepetee(int rep, ref int valeurCartes, int rep2 = -1)
         {
-            // Récupérer les fréquences des valeurs
+            // Grouper les cartes par valeur et récupérer les fréquences
             var groupes = Cartes
                 .GroupBy(c => c.Valeur)
-                .Select(g => g.Count())
-                .OrderByDescending(x => x)
+                .Select(g => new { Valeur = g.Key, Count = g.Count() }) // Stocke la valeur et le nombre d'occurrences
+                .OrderByDescending(g => g.Count) // Trier par fréquence (brelan > paire)
+                .ThenByDescending(g => g.Valeur) // Ensuite trier par valeur la plus forte
                 .ToList();
 
-            // Si le premier groupe n'a pas la fréquence 'rep', on retourne false
-            if (groupes.Count == 0 || groupes[0] != rep)
+            // Vérifier si la première répétition existe
+            var premierGroupe = groupes.FirstOrDefault(g => g.Count == rep);
+            if (premierGroupe == null)
             {
                 return false;
             }
 
+            // Additionner la valeur des cartes qui forment la répétition
+            valeurCartes = premierGroupe.Valeur * rep;
+
+            // Si on ne cherche qu'une seule répétition, on s'arrête là
             if (rep2 == -1)
             {
                 return true;
             }
 
-            // Vérifier si le deuxième groupe existe et correspond à rep2
-            return groupes.Count > 1 && groupes[1] == rep2;
+            // Vérifier si la deuxième répétition existe
+            var deuxiemeGroupe = groupes.FirstOrDefault(g => g.Count == rep2 && g.Valeur != premierGroupe.Valeur);
+            if (deuxiemeGroupe == null)
+            {
+                return false;
+            }
+
+            // Ajouter la valeur des cartes du deuxième groupe
+            valeurCartes += deuxiemeGroupe.Valeur * rep2;
+
+            return true;
         }
+
+
+
 
         // To do
-        public int RecupererValeurMain()
+        public (int, int) RecupererValeurMain()
         {
-            bool estQuinte = ValeurMainQuinte();
-            bool estCouleur = ValeurMainCouleur();
-
-            bool[] valeurs = new bool[]
+            (bool, int)[] resultats =
             {
-                estQuinte && estCouleur,           // Quinte couleur
-                ValeurMainRepetee(4),          // Carré
-                ValeurMainRepetee(3, 2),  // Full
-                estCouleur,                        // Couleur
-                estQuinte,                         // Quinte
-                ValeurMainRepetee(3),          // Brelan
-                ValeurMainRepetee(2, 2),  // Double Paire
-                ValeurMainRepetee(2),          // Paire
-                true                               // Carte la plus forte
+                (false, 0), (false, 0), (false, 0),
+                (false, 0), (false, 0), (false, 0),
+                (false, 0), (false, 0), (true, Cartes.Max(carte => carte.Valeur))
             };
 
-            return Array.FindIndex(valeurs, v => v) 
-                    is int index and >= 0 ? index : valeurs.Length;
+            resultats[0] = (
+                ValeurMainQuinte(ref resultats[0].Item2) && ValeurMainCouleur(ref resultats[0].Item2),
+                resultats[0].Item2
+            );
+
+            resultats[1] = (ValeurMainRepetee(4, ref resultats[1].Item2), resultats[1].Item2);
+            resultats[2] = (ValeurMainRepetee(3, ref resultats[2].Item2, 2), resultats[2].Item2);
+            resultats[3] = (ValeurMainCouleur(ref resultats[3].Item2), resultats[3].Item2);
+            resultats[4] = (ValeurMainQuinte(ref resultats[4].Item2), resultats[4].Item2);
+            resultats[5] = (ValeurMainRepetee(3, ref resultats[5].Item2), resultats[5].Item2);
+            resultats[6] = (ValeurMainRepetee(2, ref resultats[6].Item2, 2), resultats[6].Item2);
+            resultats[7] = (ValeurMainRepetee(2, ref resultats[7].Item2), resultats[7].Item2);
+
+            int indexCombinaisonPlusGagnante = resultats.ToList().FindIndex(v => v.Item1);
+
+            return indexCombinaisonPlusGagnante >= 0 
+                ? (indexCombinaisonPlusGagnante, resultats[indexCombinaisonPlusGagnante].Item2) 
+                : (resultats.Length-1, resultats[resultats.Length-1].Item2);
         }
+
 
 
         // To do
         public string RecupererValeurFrancais()
         {
             TrierCroissant();
-            return valeurMainFrancais[RecupererValeurMain()];
+            return valeurMainFrancais[RecupererValeurMain().Item1];
         }
     }
 }

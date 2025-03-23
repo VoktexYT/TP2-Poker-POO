@@ -8,31 +8,38 @@ namespace Poker102
 {
     internal class Program
     {
-
-        static MainJoueur[] joueurs = new MainJoueur[4];
         static void AfficherTitre()
         {
-            Console.BackgroundColor = ConsoleColor.Red;
+            Console.BackgroundColor = ConsoleColor.DarkRed;
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Valeurs des mains au Poker");
-            Console.WriteLine("    Codé par Ubert Guertin");
+            Console.WriteLine("     Valeurs des mains au Poker");
+            Console.WriteLine("         Codé par Ubert Guertin");
         }
 
         static void Main(string[] args)
         {
-            Util.InitTapis();
+            bool relancerJeu = true;
+
+            while (relancerJeu)
+            {
+                Util.ViderEcran();
+                Util.InitTapis();
            
-            AfficherTitre();
+                AfficherTitre();
 
-            Paquet paquet = new Paquet();
-            Ronde ronde = new Ronde(paquet);
+                Paquet paquet = new Paquet();
+                Ronde ronde = new Ronde(paquet);
 
-            ronde.DistribuerCartes();
-            // ronde.TricherMainsDesJoueurs();
-            ronde.AfficherMainsJoueurs();
+                ronde.DistribuerCartes();
+                // ronde.TricherMainsDesJoueurs();
+                ronde.AfficherMainsJoueurs();
 
-            Util.Pause();
-            Util.SetNoirEttBlanc();
+                Console.ResetColor();
+                
+                Console.Write("\nVoulez-vous relancer une ronde ? (o/n): ");
+                ConsoleKeyInfo key = Console.ReadKey();
+                relancerJeu = key.KeyChar == 'o';
+            }
         }
 
     }

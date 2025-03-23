@@ -108,7 +108,7 @@ namespace Poker102
         public static void InitTapis()
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
             Console.ForegroundColor = ConsoleColor.Black;
             ViderEcran();
         }

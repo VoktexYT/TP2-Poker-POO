@@ -85,41 +85,46 @@ namespace Poker102
 
         public void AfficherMainsJoueurs()
         {
-            int i = 0;
-            int indexJoueurPlusFort = 0;
+            int indexCombinaisonGagnante = 0;
+            int indexCartePlusForte = 0;
             
             for (int j = 0; j < joueurs.Length; j++)
             {
-                if (joueurs[indexJoueurPlusFort].RecupererValeurMain() > joueurs[j].RecupererValeurMain())
+                if (joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 > joueurs[j].RecupererValeurMain().Item1)
                 {
-                    indexJoueurPlusFort = j;
+                    indexCombinaisonGagnante = j;
+                    indexCartePlusForte = indexCombinaisonGagnante;
+                }
+
+                if (joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 ==
+                    joueurs[j].RecupererValeurMain().Item1)
+                {
+                    if (joueurs[indexCartePlusForte].RecupererValeurMain().Item2 <
+                        joueurs[j].RecupererValeurMain().Item2)
+                    {
+                        indexCartePlusForte = j;
+                    }
                 }
             }
 
-            List<int> listeIndexJoueursPlusForts = new List<int>();
-            
-            for (int j = 0; j < joueurs.Length; j++)
-            {
-                if (joueurs[j].RecupererValeurMain() == joueurs[indexJoueurPlusFort].RecupererValeurMain())
-                {
-                    listeIndexJoueursPlusForts.Add(j);        
-                }
-            }
+            int i = 0;
 
             foreach (MainJoueur joueur in joueurs)
             {
                 joueur.Afficher();
                 Console.SetCursorPosition(35, 5 * i + 6);
                 
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
                 
-                if (listeIndexJoueursPlusForts.Contains(i))
+                if (joueurs[indexCartePlusForte] == joueur)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkYellow;
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
                 }
                 
                 Console.Write(joueur.RecupererValeurFrancais());
+                
                 i++;
             }
 
