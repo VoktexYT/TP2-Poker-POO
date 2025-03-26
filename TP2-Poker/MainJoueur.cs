@@ -20,117 +20,59 @@ public class MainJoueur
     {
         _numeroJoueur = nj;
         Cartes = new[] { c0, c1, c2, c3, c4 };
-        TrierCroissant();
+        Evaluateur.TrierCroissant(Cartes);
     }
 
+    /// <summary>
+    /// Affiche en ordre croissant les cinq cartes
+    /// </summary>
     public void Afficher()
     {
-        TrierCroissant();
+        Evaluateur.TrierCroissant(Cartes);
 
         for(int i = 0; i < 5; i++)
         {
             Cartes[i].Afficher(i, _numeroJoueur);
         }
     }
-
-    void TrierCroissant()
-    {
-        Array.Sort(Cartes, (Carte cA, Carte cB) =>
-        {
-            return (cA.Valeur < cB.Valeur) ? -1 : (cA.Valeur > cB.Valeur) ? 1 : 0; 
-        });
-    }
-
-    bool ValeurMainCouleur(ref int valeurCartes)
-    {
-        return Cartes.All(carte => carte.Sorte == Cartes[0].Sorte);
-    }
-
-    bool ValeurMainQuinte(ref int valeurCartes)
-    {
-        TrierCroissant();
-        
-        List<Carte> valeurChaqueCarte = new List<Carte>();
-
-        IEnumerable<int> differenceCarte =
-            Cartes.Zip(Cartes.Skip(1), (a, b) => b.Valeur - a.Valeur);
-
-        valeurCartes += valeurChaqueCarte.Sum((c) => c.Valeur);
-        
-        return Cartes.All(diff => diff.Valeur == 1);
-    }
     
-    bool ValeurMainRepetee(int rep, ref int valeurCartes, int rep2 = -1)
-    {
-        var groupes = Cartes
-            .GroupBy(c => c.Valeur)
-            .Select(g => new { Valeur = g.Key, Count = g.Count() })
-            .OrderByDescending(g => g.Count)
-            .ThenByDescending(g => g.Valeur)
-            .ToList();
-
-        var premierGroupe = groupes.FirstOrDefault(g => g.Count == rep);
-        
-        if (premierGroupe == null)
-        {
-            return false;
-        }
-
-        valeurCartes = premierGroupe.Valeur * rep;
-
-        if (rep2 == -1)
-        {
-            return true;
-        }
-
-        var deuxiemeGroupe = 
-            groupes.FirstOrDefault(
-                g => g.Count == rep2 && g.Valeur != premierGroupe.Valeur);
-        
-        if (deuxiemeGroupe == null)
-        {
-            return false;
-        }
-
-        valeurCartes += deuxiemeGroupe.Valeur * rep2;
-
-        return true;
-    }
-    
-    // To do
+    /// <summary>
+    /// Recuperer la valeur de la main en fonction des combinaisons possibles (quinte, couleur, etc)
+    /// </summary>
+    /// <returns>
+    ///     Retourne l'index de la combinaison et la puissance de celle-ci
+    ///     (INDEX RESULTAT (Ex. Max = 8), PUISSANCE = 3 (Si la carte la plus forte est 3))
+    /// </returns>
     public (int, int) RecupererValeurMain()
     {
-        (bool, int)[] resultats =
+        Evaluateur evaluateur = new Evaluateur(Cartes[0],Cartes[1],Cartes[2],Cartes[3],Cartes[4]);
+
+        int valeur0, valeur1 = 0;
+        
+        // (Chaque méthode retourne TRUE ou FALSE (Ex: S'il y a un full), La puissance de la main)
+        var resultats = new (bool, int)[]
         {
-            (false, 0), (false, 0), (false, 0),
-            (false, 0), (false, 0), (false, 0),
-            (false, 0), (false, 0), (true, Cartes.Max(carte => carte.Valeur))
+            (evaluateur.EstQuinte(out valeur0) && evaluateur.EstCouleur(out valeur1), valeur0 + valeur1),
+            (evaluateur.ADesCartesRepetees(4, out int valeur2), valeur2),
+            (evaluateur.ADesCartesRepetees(3, out int valeur3, 2), valeur3),
+            (evaluateur.EstCouleur(out int valeur4), valeur4),
+            (evaluateur.EstQuinte(out int valeur5), valeur5),
+            (evaluateur.ADesCartesRepetees(3, out int valeur6), valeur6),
+            (evaluateur.ADesCartesRepetees(2, out int valeur7, 2), valeur7),
+            (evaluateur.ADesCartesRepetees(2, out int valeur8), valeur8),
+            (true, Cartes.Max(c => c.Valeur)) // Valeur de la carte la plus haute
         };
-
-        resultats[0] = (
-            ValeurMainQuinte(ref resultats[0].Item2) && ValeurMainCouleur(ref resultats[0].Item2),
-            resultats[0].Item2
-        );
-
-        resultats[1] = (ValeurMainRepetee(4, ref resultats[1].Item2), resultats[1].Item2);
-        resultats[2] = (ValeurMainRepetee(3, ref resultats[2].Item2, 2), resultats[2].Item2);
-        resultats[3] = (ValeurMainCouleur(ref resultats[3].Item2), resultats[3].Item2);
-        resultats[4] = (ValeurMainQuinte(ref resultats[4].Item2), resultats[4].Item2);
-        resultats[5] = (ValeurMainRepetee(3, ref resultats[5].Item2), resultats[5].Item2);
-        resultats[6] = (ValeurMainRepetee(2, ref resultats[6].Item2, 2), resultats[6].Item2);
-        resultats[7] = (ValeurMainRepetee(2, ref resultats[7].Item2), resultats[7].Item2);
-
+        
+        // Retourne l'index du premier TRUE dans le tableau "resultats"
         int indexCombinaisonPlusGagnante = resultats.ToList().FindIndex(v => v.Item1);
 
-        return indexCombinaisonPlusGagnante >= 0 
-            ? (indexCombinaisonPlusGagnante, resultats[indexCombinaisonPlusGagnante].Item2) 
-            : (resultats.Length-1, resultats[resultats.Length-1].Item2);
+        return (indexCombinaisonPlusGagnante, resultats[indexCombinaisonPlusGagnante].Item2);
     }
     
     // To do
     public string RecupererValeurFrancais()
     {
-        TrierCroissant();
+        Evaluateur.TrierCroissant(Cartes);
         return valeurMainFrancais[RecupererValeurMain().Item1];
     }
 }
