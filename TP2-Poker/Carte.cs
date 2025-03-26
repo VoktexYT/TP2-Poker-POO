@@ -34,19 +34,12 @@ public class Carte
     private const int _ESPACEMENT_X = 2; // Espacement entre les cartes
     private const ConsoleColor _COULEUR_TEXTE = ConsoleColor.White; // Couleur du texte des cartes
 
-    /// <summary>
-    /// La sorte de la carte (0 = Pique, 1 = Trèfle, 2 = Cœur, 3 = Carreau).
-    /// </summary>
     public int Sorte { get; set; }
-    
-    /// <summary>
-    /// La valeur de la carte (0 = 2, 1 = 3, ..., 12 = As).
-    /// </summary>
     public int Valeur { get; set; }
 
-    private readonly string _texte; // Texte affiché sur la carte
-    private readonly char _symbole; // Symbole correspondant à la sorte
-    private readonly ConsoleColor _couleurArrierePlan; // Couleur d'arrière-plan de la carte
+    private readonly string _texte;
+    private readonly char _symbole;
+    private readonly ConsoleColor _couleurArrierePlan;
 
     /// <summary>
     /// Initialise une nouvelle carte avec une sorte et une valeur spécifiques.

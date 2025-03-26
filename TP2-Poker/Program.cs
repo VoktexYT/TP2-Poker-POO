@@ -29,34 +29,37 @@ public class Program
     {
         Console.Write("\nVoulez-vous relancer une ronde ? (o/n): ");
         ConsoleKeyInfo key = Console.ReadKey();
-        relancerJeu = key.KeyChar == 'o'; // La partie est relancée si l'utilisateur appuie sur 'o'.
+        relancerJeu = key.KeyChar == 'o';
     }
 
     /// <summary>
     /// Point d'entrée du programme. Gère le déroulement du jeu en boucle tant que l'utilisateur veut continuer.
     /// </summary>
-    /// <param name="args">Arguments de la ligne de commande (non utilisés).</param>
     static void Main(string[] args)
     {
         bool relancerJeu = true;
 
         while (relancerJeu)
         {
-            Util.ViderEcran(); // Efface l'écran pour une meilleure lisibilité.
-            Util.InitTapis(); // Initialise le tapis de jeu.
+            Util.ViderEcran();
+            Util.InitTapis();
        
-            AfficherTitre(); // Affiche le titre du programme.
+            AfficherTitre();
 
-            Paquet paquet = new Paquet(); // Crée un nouveau paquet de cartes.
-            Ronde ronde = new Ronde(paquet); // Crée une nouvelle ronde de jeu.
+            Paquet paquet = new Paquet();
+            Ronde ronde = new Ronde(paquet);
 
-            ronde.DistribuerCartes(); // Distribue les cartes aux joueurs.
-            // ronde.TricherMainsDesJoueurs(); // Permet d'afficher des mains spécifiques (probablement pour test).
-            ronde.AfficherMainsJoueurs(); // Affiche les cartes des joueurs.
+            ronde.DistribuerCartes();
+
+            /////////////////////////////////////
+             //ronde.TricherMainsDesJoueurs(); // Permet d'afficher des mains spécifiques
+            /////////////////////////////////////
+
+            ronde.AfficherMainsJoueurs();
             
-            Console.ResetColor(); // Réinitialise les couleurs de la console.
+            Console.ResetColor();
 
-            DemanderNouvelleRonde(ref relancerJeu); // Demande à l'utilisateur s'il veut recommencer.
+            DemanderNouvelleRonde(ref relancerJeu);
         }
     }
 }

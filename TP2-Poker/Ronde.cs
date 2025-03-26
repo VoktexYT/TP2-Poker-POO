@@ -5,20 +5,10 @@
 /// </summary>
 public class Ronde
 {
-    /// <summary>
-    /// Le paquet de cartes utilisé pour la ronde.
-    /// </summary>
     private Paquet lePaquet { get; set; }
 
-    /// <summary>
-    /// Tableau contenant les mains des joueurs.
-    /// </summary>
     private MainJoueur[] joueurs = new MainJoueur[4];
 
-    /// <summary>
-    /// Initialise une nouvelle instance de la classe <see cref="Ronde"/> avec un paquet de cartes donné.
-    /// </summary>
-    /// <param name="p">Le paquet de cartes utilisé pour la ronde.</param>
     public Ronde(Paquet p)
     {
         lePaquet = p;
@@ -90,22 +80,14 @@ public class Ronde
         joueur.RecupererValeurMain();
     }
 
-    /// <summary>
-    /// Détermine le joueur gagnant en comparant les mains des joueurs (à implémenter).
-    /// </summary>
-    private void DeterminerGagnant()
-    {
-        // TODO: Implémenter la logique pour déterminer le gagnant de la ronde.
-    }
 
     /// <summary>
-    /// Affiche les mains des joueurs et met en évidence le joueur gagnant.
+    /// Trouve le joueur gagnant
     /// </summary>
-    public void AfficherMainsJoueurs()
+    /// <param name="indexCombinaisonGagnante">L'index de la combinaison la plus forte</param>
+    /// <param name="indexCartePlusForte">L'index de la combinaison avec les cartes les plus fortes</param>
+    private void CalculerMainsJoueurs(ref int indexCombinaisonGagnante, ref int indexCartePlusForte)
     {
-        int indexCombinaisonGagnante = 0;
-        int indexCartePlusForte = 0;
-        
         for (int j = 0; j < joueurs.Length; j++)
         {
             if (joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 > joueurs[j].RecupererValeurMain().Item1)
@@ -124,6 +106,17 @@ public class Ronde
                 }
             }
         }
+    }
+
+    /// <summary>
+    /// Affiche les mains des joueurs et met en évidence le joueur gagnant.
+    /// </summary>
+    public void AfficherMainsJoueurs()
+    {
+        int indexCombinaisonGagnante = 0;
+        int indexCartePlusForte = 0;
+
+        CalculerMainsJoueurs(ref indexCombinaisonGagnante, ref indexCartePlusForte);
 
         int i = 0;
 

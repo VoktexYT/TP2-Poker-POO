@@ -15,8 +15,8 @@ public class Util
 	/// </summary>
 	public static void ViderEcran()
 	{
-		Console.Clear(); // Efface le contenu de la console.
-		Console.WriteLine("\x1b[3J"); // Supprime l'historique du terminal (utile sur certains systèmes).
+		Console.Clear();
+		Console.WriteLine("\x1b[3J");
 	}
     
 	/// <summary>
@@ -25,7 +25,7 @@ public class Util
 	public static void Pause()
 	{
 		Console.WriteLine("\n\tAppuyez sur une touche...");
-		Console.ReadKey(true); // Attend une entrée utilisateur sans afficher la touche pressée.
+		Console.ReadKey(true);
 	}
 
 	/// <summary>
@@ -33,10 +33,10 @@ public class Util
 	/// </summary>
 	public static void SetNoirEttBlanc()
 	{
-		Console.ResetColor(); // Réinitialise les couleurs par défaut de la console.
+		Console.ResetColor();
 		Console.BackgroundColor = ConsoleColor.Black;
 		Console.ForegroundColor = ConsoleColor.White;
-		ViderEcran(); // Vide l'écran après la modification des couleurs.
+		ViderEcran();
 	}
 
 	/// <summary>
@@ -44,9 +44,9 @@ public class Util
 	/// </summary>
 	public static void InitTapis()
 	{
-		Console.OutputEncoding = System.Text.Encoding.UTF8; // Active l'encodage UTF-8 pour l'affichage des caractères spéciaux.
-		Console.BackgroundColor = ConsoleColor.DarkGreen; // Définit le fond en vert foncé.
-		Console.ForegroundColor = ConsoleColor.Black; // Définit le texte en noir.
-		ViderEcran(); // Vide l'écran après la modification des couleurs.
+		Console.OutputEncoding = System.Text.Encoding.UTF8;
+		Console.BackgroundColor = ConsoleColor.DarkGreen;
+		Console.ForegroundColor = ConsoleColor.Black;
+		ViderEcran();
 	}
 }
