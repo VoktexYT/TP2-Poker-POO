@@ -50,7 +50,7 @@ internal static class Program
         ronde.DistribuerCartes();
             
         ////////////////////////////////////
-        ronde.TricherMainsDesJoueurs();
+        // ronde.TricherMainsDesJoueurs();
         ////////////////////////////////////
             
         ronde.AfficherMainsJoueurs();
