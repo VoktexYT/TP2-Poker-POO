@@ -3,12 +3,12 @@
 /// <summary>
 /// Classe utilitaire contenant des méthodes pour gérer l'affichage et d'autres fonctionnalités globales du programme.
 /// </summary>
-public class Util
+public static class Util
 {
 	/// <summary>
 	/// Générateur de nombres aléatoires utilisé dans tout le programme.
 	/// </summary>
-	public static Random rdm = new Random();
+	public static readonly Random rdm = new Random();
 
 	/// <summary>
 	/// Vide l'écran de la console.
@@ -24,19 +24,8 @@ public class Util
 	/// </summary>
 	public static void Pause()
 	{
-		Console.WriteLine("\n\tAppuyez sur une touche...");
+		Console.Write("\n  Appuyez sur une touche...");
 		Console.ReadKey(true);
-	}
-
-	/// <summary>
-	/// Réinitialise la couleur du terminal en noir et blanc, puis vide l'écran.
-	/// </summary>
-	public static void SetNoirEttBlanc()
-	{
-		Console.ResetColor();
-		Console.BackgroundColor = ConsoleColor.Black;
-		Console.ForegroundColor = ConsoleColor.White;
-		ViderEcran();
 	}
 
 	/// <summary>
@@ -44,7 +33,7 @@ public class Util
 	/// </summary>
 	public static void InitTapis()
 	{
-		Console.OutputEncoding = System.Text.Encoding.UTF8;
+		Console.OutputEncoding = System.Text.Encoding.UTF8; 
 		Console.BackgroundColor = ConsoleColor.DarkGreen;
 		Console.ForegroundColor = ConsoleColor.Black;
 		ViderEcran();

@@ -5,13 +5,23 @@
 /// </summary>
 public class Ronde
 {
-    private Paquet lePaquet { get; set; }
+    /// <summary>
+    /// Le paquet de cartes utilisé pour la ronde.
+    /// </summary>
+    private Paquet _paquet { get; set; }
 
-    private MainJoueur[] joueurs = new MainJoueur[4];
+    /// <summary>
+    /// Tableau contenant les mains des _joueurs.
+    /// </summary>
+    private readonly MainJoueur[] _joueurs = new MainJoueur[4];
 
+    /// <summary>
+    /// Initialise une nouvelle instance de la classe <see cref="Ronde"/> avec un paquet de cartes donné.
+    /// </summary>
+    /// <param name="p">Le paquet de cartes utilisé pour la ronde.</param>
     public Ronde(Paquet p)
     {
-        lePaquet = p;
+        _paquet = p;
     }
 
     /// <summary>
@@ -19,126 +29,121 @@ public class Ronde
     /// </summary>
     public void DistribuerCartes()
     {
-        lePaquet.Brasser();
+        _paquet.Brasser();
 
         for (int i = 0; i < 4; i++)
         {
-            joueurs[i] = new MainJoueur(i,
-                lePaquet.Distribuer(),
-                lePaquet.Distribuer(),
-                lePaquet.Distribuer(),
-                lePaquet.Distribuer(),
-                lePaquet.Distribuer()
+            _joueurs[i] = new MainJoueur(i,
+                _paquet.Distribuer(),
+                _paquet.Distribuer(),
+                _paquet.Distribuer(),
+                _paquet.Distribuer(),
+                _paquet.Distribuer()
             );
         }
     }
 
     /// <summary>
-    /// Modifie les mains des joueurs pour leur attribuer des cartes spécifiques (triche).
+    /// Modifie les mains des _joueurs pour leur attribuer des cartes spécifiques (triche).
     /// </summary>
     public void TricherMainsDesJoueurs()
     {
-        joueurs[0].Cartes[0] = new Carte(0, 12);
-        joueurs[0].Cartes[1] = new Carte(1, 8);
-        joueurs[0].Cartes[2] = new Carte(2, 9);
-        joueurs[0].Cartes[3] = new Carte(3, 10);
-        joueurs[0].Cartes[4] = new Carte(2, 11);
+        _joueurs[0].cartes[0] = new Carte(1, 12);
+        _joueurs[0].cartes[1] = new Carte(0, 1);
+        _joueurs[0].cartes[2] = new Carte(2, 9);
+        _joueurs[0].cartes[3] = new Carte(0, 2);
+        _joueurs[0].cartes[4] = new Carte(0, 11);
+        
+        _joueurs[1].cartes[0] = new Carte(1, 1);
+        _joueurs[1].cartes[1] = new Carte(0, 2);
+        _joueurs[1].cartes[2] = new Carte(2, 6);
+        _joueurs[1].cartes[3] = new Carte(0, 10);
+        _joueurs[1].cartes[4] = new Carte(3, 3);
 
-        joueurs[1].Cartes[0] = new Carte(1, 10);
-        joueurs[1].Cartes[1] = new Carte(1, 10);
-        joueurs[1].Cartes[2] = new Carte(2, 10);
-        joueurs[1].Cartes[3] = new Carte(2, 10);
-        joueurs[1].Cartes[4] = new Carte(0, 3);
-
-        joueurs[2].Cartes[0] = new Carte(2, 12);
-        joueurs[2].Cartes[1] = new Carte(3, 0);
-        joueurs[2].Cartes[2] = new Carte(3, 1);
-        joueurs[2].Cartes[3] = new Carte(3, 2);
-        joueurs[2].Cartes[4] = new Carte(3, 3);
-
-        joueurs[3].Cartes[0] = new Carte(0, 1);
-        joueurs[3].Cartes[1] = new Carte(2, 1);
-        joueurs[3].Cartes[2] = new Carte(3, 1);
-        joueurs[3].Cartes[3] = new Carte(3, 8);
-        joueurs[3].Cartes[4] = new Carte(1, 8);
+        _joueurs[2].cartes[0] = new Carte(1, 2);
+        _joueurs[2].cartes[1] = new Carte(2, 10);
+        _joueurs[2].cartes[2] = new Carte(1, 7);
+        _joueurs[2].cartes[3] = new Carte(3, 1);
+        _joueurs[2].cartes[4] = new Carte(1, 12);
+        
+        _joueurs[3].cartes[0] = new Carte(1, 2);
+        _joueurs[3].cartes[1] = new Carte(2, 10);
+        _joueurs[3].cartes[2] = new Carte(1, 7);
+        _joueurs[3].cartes[3] = new Carte(3, 1);
+        _joueurs[3].cartes[4] = new Carte(1, 12);
     }
-
+    
     /// <summary>
-    /// Évalue la main d'un joueur donné en utilisant un évaluateur de combinaisons.
+    /// Affiche les mains des joueurs et met en évidence le joueur gagnant.
     /// </summary>
-    /// <param name="joueur">Le joueur dont la main doit être évaluée.</param>
-    private void EvaluerMains(MainJoueur joueur)
+    public void AfficherMainsJoueurs()
     {
-        Evaluateur evaluateur = new Evaluateur(
-            joueur.Cartes[0],
-            joueur.Cartes[1],
-            joueur.Cartes[2],
-            joueur.Cartes[3],
-            joueur.Cartes[4]
-        );
+        CalculerJoueurPlusFort(out int indexMainPlusForte);
+        
+        int i = 0;
 
-        joueur.RecupererValeurMain();
-    }
-
-
-    /// <summary>
-    /// Trouve le joueur gagnant
-    /// </summary>
-    /// <param name="indexCombinaisonGagnante">L'index de la combinaison la plus forte</param>
-    /// <param name="indexCartePlusForte">L'index de la combinaison avec les cartes les plus fortes</param>
-    private void CalculerMainsJoueurs(ref int indexCombinaisonGagnante, ref int indexCartePlusForte)
-    {
-        for (int j = 0; j < joueurs.Length; j++)
+        foreach (MainJoueur joueur in _joueurs)
         {
-            if (joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 > joueurs[j].RecupererValeurMain().Item1)
+            joueur.Afficher();
+            Console.SetCursorPosition(40, 5 * i + 6);
+            MettreCouleurPerdant();
+            
+            if (_joueurs[indexMainPlusForte].RecupererValeurFrancais() == joueur.RecupererValeurFrancais())
+            {
+                MettreCouleurGagnant();
+            }
+            
+            Console.Write(joueur.RecupererValeurFrancais());
+            i++;
+        }
+
+        Console.SetCursorPosition(35, 5 * i + 5);
+    }
+
+    /// <summary>
+    /// Calcule l'index de la main la plus forte
+    /// </summary>
+    /// <param name="indexCartePlusForte">L'index de la main la plus forte</param>
+    private void CalculerJoueurPlusFort(out int indexMainPlusForte)
+    {
+        int indexCombinaisonGagnante = 0;
+        indexMainPlusForte = 0;
+        
+        for (int j = 0; j < _joueurs.Length; j++)
+        {
+            if (_joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 > _joueurs[j].RecupererValeurMain().Item1)
             {
                 indexCombinaisonGagnante = j;
-                indexCartePlusForte = indexCombinaisonGagnante;
+                indexMainPlusForte = indexCombinaisonGagnante;
             }
 
-            if (joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 ==
-                joueurs[j].RecupererValeurMain().Item1)
+            if (_joueurs[indexCombinaisonGagnante].RecupererValeurMain().Item1 ==
+                _joueurs[j].RecupererValeurMain().Item1)
             {
-                if (joueurs[indexCartePlusForte].RecupererValeurMain().Item2 <
-                    joueurs[j].RecupererValeurMain().Item2)
+                if (_joueurs[indexMainPlusForte].RecupererValeurMain().Item2 <
+                    _joueurs[j].RecupererValeurMain().Item2)
                 {
-                    indexCartePlusForte = j;
+                    indexMainPlusForte = j;
                 }
             }
         }
     }
 
     /// <summary>
-    /// Affiche les mains des joueurs et met en évidence le joueur gagnant.
+    ///  Change la couleur de la console pour mettre en evidence la main gagnante
     /// </summary>
-    public void AfficherMainsJoueurs()
+    private void MettreCouleurGagnant()
     {
-        int indexCombinaisonGagnante = 0;
-        int indexCartePlusForte = 0;
+        Console.BackgroundColor = ConsoleColor.White;
+        Console.ForegroundColor = ConsoleColor.Black;
+    }
 
-        CalculerMainsJoueurs(ref indexCombinaisonGagnante, ref indexCartePlusForte);
-
-        int i = 0;
-
-        foreach (MainJoueur joueur in joueurs)
-        {
-            joueur.Afficher();
-            Console.SetCursorPosition(40, 5 * i + 6);
-            
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.White;
-            
-            if (joueurs[indexCartePlusForte] == joueur)
-            {
-                Console.BackgroundColor = ConsoleColor.White;
-                Console.ForegroundColor = ConsoleColor.Black;
-            }
-            
-            Console.Write(joueur.RecupererValeurFrancais());
-            
-            i++;
-        }
-
-        Console.SetCursorPosition(35, 5 * i + 5);
+    /// <summary>
+    /// Change la couleur de la console pour mettre en evidence la main perdante
+    /// </summary>
+    private void MettreCouleurPerdant()
+    {
+        Console.BackgroundColor = ConsoleColor.Black;
+        Console.ForegroundColor = ConsoleColor.White;
     }
 }

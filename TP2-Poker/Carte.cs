@@ -5,7 +5,19 @@
 /// </summary>
 public class Carte
 {
-    // Symboles Unicode pour représenter les sortes (♠, ♣, ♥, ♦)
+    /// <summary>
+    /// La sorte de la carte (0 = Pique, 1 = Trèfle, 2 = Cœur, 3 = Carreau).
+    /// </summary>
+    public int Sorte { get; set; }
+    
+    /// <summary>
+    /// La valeur de la carte (0 = 2, 1 = 3, ..., 12 = As).
+    /// </summary>
+    public int Valeur { get; set; }
+
+    private readonly string _texte;
+    private readonly char _symbole;
+    
     private readonly char[] _SYMBOLES =
     {
         '\u2660', // Pique
@@ -14,32 +26,15 @@ public class Carte
         '\u2666'  // Carreau
     };
 
-    // Couleurs d'arrière-plan associées aux sortes
-    private readonly ConsoleColor[] _COULEURS_ARRIERES_PLANS =
-    {
-        ConsoleColor.Black,      // Pique
-        ConsoleColor.DarkBlue,   // Trèfle
-        ConsoleColor.DarkRed,    // Cœur
-        ConsoleColor.DarkYellow  // Carreau
-    };
-
-    // Représentation textuelle des valeurs des cartes
     private readonly string[] _VALEURS_TEXTES = [
         "2", "3", "4", "5", "6", "7", "8", "9",
         "10", "J", "Q", "K", "A"
     ];
 
-    private const int _LARGEUR = 5; // Largeur visuelle d'une carte
-    private const int _DECALAGE_GAUCHE = 2; // Décalage horizontal pour l'affichage
-    private const int _ESPACEMENT_X = 2; // Espacement entre les cartes
-    private const ConsoleColor _COULEUR_TEXTE = ConsoleColor.White; // Couleur du texte des cartes
-
-    public int Sorte { get; set; }
-    public int Valeur { get; set; }
-
-    private readonly string _texte;
-    private readonly char _symbole;
-    private readonly ConsoleColor _couleurArrierePlan;
+    private const int _LARGEUR = 5;
+    private const int _DECALAGE_GAUCHE = 2;
+    private const int _ESPACEMENT_X = 2;
+    private const ConsoleColor _COULEUR_TEXTE = ConsoleColor.Black;
 
     /// <summary>
     /// Initialise une nouvelle carte avec une sorte et une valeur spécifiques.
@@ -53,7 +48,6 @@ public class Carte
         
         _texte = _VALEURS_TEXTES[v];
         _symbole = _SYMBOLES[s];
-        _couleurArrierePlan = _COULEURS_ARRIERES_PLANS[s];
     }
 
     /// <summary>
@@ -73,7 +67,6 @@ public class Carte
     private void AjusteCouleurSorte()
     {
         Console.ForegroundColor = _COULEUR_TEXTE;
-        Console.BackgroundColor = _couleurArrierePlan;
     }
 
     /// <summary>
@@ -82,6 +75,8 @@ public class Carte
     /// <param name="position2D">Tuple contenant la position X et Y.</param>
     private void Dessiner((int x, int y) position2D)
     {
+        string couleurCarte = "\u001b[107m" + (Sorte == 0 || Sorte == 1 ? "\u001b[30m" : "\u001b[91m");
+        
         string[] structureCarte =
         {
             _texte.PadRight(_LARGEUR),
@@ -95,7 +90,7 @@ public class Carte
         {
             Console.CursorLeft = positionGaucheCurseur;
             Console.CursorTop = _LARGEUR + (position2D.y * _LARGEUR) + i;
-            Console.WriteLine(structureCarte[i]);
+            Console.WriteLine(couleurCarte + structureCarte[i]);
         }
     }
 }
